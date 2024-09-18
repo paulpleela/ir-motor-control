@@ -1,3 +1,27 @@
+#include <RemoteXY.h>
+
+// RemoteXY connection settings 
+#define REMOTEXY_SERIAL Serial
+#define REMOTEXY_SERIAL_SPEED 9600
+
+// RemoteXY GUI configuration  
+#pragma pack(push, 1)  
+uint8_t RemoteXY_CONF[] =   // 37 bytes
+  { 255,4,0,0,0,30,0,18,0,0,0,108,1,200,84,1,1,2,0,5,
+  20,14,50,50,32,2,26,31,5,133,15,50,50,32,2,26,31 };
+  
+// This structure defines all the variables and events of the control interface 
+struct {
+  // Input variables
+  int8_t unused1; // from -100 to 100
+  int8_t speed1; // from -100 to 100
+  int8_t unused2; // from -100 to 100
+  int8_t speed2; // from -100 to 100
+
+  uint8_t connect_flag;  // =1 if wire connected, else =0
+} RemoteXY;   
+#pragma pack(pop)
+
 // Control pins that operate the shift register
 #define MOTORLATCH 12
 #define MOTORCLK 4
@@ -20,12 +44,38 @@
 #define BRAKE 3
 #define RELEASE 4
 
+CRemoteXY *remotexy;
+
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(REMOTEXY_SERIAL_SPEED);
+  remotexy = new CRemoteXY (
+    RemoteXY_CONF_PROGMEM, 
+    &RemoteXY, 
+    new CRemoteXYStream_HardSerial (
+      &Serial,
+      REMOTEXY_SERIAL_SPEED
+    )
+  );
 }
 
 void loop() {
+  remotexy->handler();
 
+  if (RemoteXY.speed1 == 0) {
+    motor(1, RELEASE, 0);
+  } else if (RemoteXY.speed1 > 0) {
+    motor(1, FORWARD, RemoteXY.speed1);
+  } else {
+    motor(1, BACKWARD, RemoteXY.speed1);
+  }
+
+  if (RemoteXY.speed2 == 0) {
+    motor(2, RELEASE, 0);
+  } else if (RemoteXY.speed2 > 0) {
+    motor(2, FORWARD, RemoteXY.speed2);
+  } else {
+    motor(2, BACKWARD, RemoteXY.speed2);
+  }
 }
 
 void motor(int motorNumber, int command, int speed) {
@@ -115,8 +165,8 @@ void shiftWrite(int output, int state) {
   // Update the shift register with the new output state
   bitWrite(latch_copy, output, state);
   shiftOut(MOTORDATA, MOTORCLK, MSBFIRST, latch_copy);
-  delayMicroseconds(5);
+  RemoteXY_delay(1);    
   digitalWrite(MOTORLATCH, HIGH);
-  delayMicroseconds(5);
+  RemoteXY_delay(1);    
   digitalWrite(MOTORLATCH, LOW);
 }
