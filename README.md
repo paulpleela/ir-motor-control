@@ -12,7 +12,7 @@ This Arduino program can be used for controlling the speed and direction of two 
 ### Circuit diagram
 ![Circuit diagram image](https://github.com/user-attachments/assets/6764eee1-2715-4105-98bd-ebf9b82373c0)
 
-### Running the Program
+### Running the program
 1. Connect the hardware following the circuit diagram shown above
 2. Clone this repository:
     ```bash
@@ -23,11 +23,11 @@ This Arduino program can be used for controlling the speed and direction of two 
     - Select the correct board (`Tools > Board > Arduino AVR Boards > Arduino Uno`) and port (`Tools > Port > COMx`)
 4. Install the required libraries
     - Go to `Sketch > Include Library > Manage Libraries`
-    - Search and install the [RemoteXY](https://remotexy.com/en/library) library (version 3.1.14)
+    - Search and install the [RemoteXY library](https://remotexy.com/en/library) (version 3.1.14)
 6. Press the `->` icon in the top left of the IDE to upload the code to the Arduino board
 
 ### Controlling the motors
-1. Install the RemoteXY app on your mobile device
+1. Install the [RemoteXY app](https://remotexy.com/en/download/) on your mobile device
 2. Pair the HC-05 Bluetooth module with your mobile device
 3. Use the graphical interface (joysticks) on the RemoteXY app to control the motors
 
