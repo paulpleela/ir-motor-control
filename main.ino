@@ -1,14 +1,11 @@
+#include <SoftwareSerial.h>
 #include <RemoteXY.h>
-
-// RemoteXY connection settings 
-#define REMOTEXY_SERIAL Serial
-#define REMOTEXY_SERIAL_SPEED 9600
 
 // RemoteXY GUI configuration  
 #pragma pack(push, 1)  
 uint8_t RemoteXY_CONF[] =   // 37 bytes
-  { 255,4,0,0,0,30,0,18,0,0,0,108,1,200,84,1,1,2,0,5,
-  20,14,50,50,32,2,26,31,5,133,15,50,50,32,2,26,31 };
+  { 255,4,0,0,0,30,0,18,0,0,0,31,1,200,84,1,1,2,0,5,
+  15,9,60,60,32,2,26,31,5,130,9,60,60,32,2,26,31 };
   
 // This structure defines all the variables and events of the control interface 
 struct {
@@ -47,13 +44,13 @@ struct {
 CRemoteXY *remotexy;
 
 void setup() {
-  Serial.begin(REMOTEXY_SERIAL_SPEED);
   remotexy = new CRemoteXY (
     RemoteXY_CONF_PROGMEM, 
     &RemoteXY, 
-    new CRemoteXYStream_HardSerial (
-      &Serial,
-      REMOTEXY_SERIAL_SPEED
+    new CRemoteXYStream_SoftSerial (
+      A1,     // REMOTEXY_SERIAL_RX
+      A0,     // REMOTEXY_SERIAL_TX
+      9600    // REMOTEXY_SERIAL_SPEED
     )
   );
 }
