@@ -23,7 +23,7 @@ TODO
     - Select the correct board (`Tools > Board > Arduino AVR Boards > Arduino Uno`) and port (`Tools > Port > COMx`)
 4. Install the required libraries
     - Go to `Sketch > Include Library > Manage Libraries`
-    - Search and install the [IRremote library](http://www.dfrobot.com/wiki/index.php?title=IR_Kit%28SKU:DFR0107%29) (version 4.4.1)
+    - Search and install the [IRremote library](https://github.com/Arduino-IRremote/Arduino-IRremote) (version 4.4.1)
 6. Press the `->` icon in the top left of the IDE to upload the code to the Arduino board
 
 ### Controlling the motors
