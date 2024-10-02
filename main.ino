@@ -17,41 +17,88 @@
 #define MOTOR2_PWM 3
 
 // Motor control commands
-#define FORWARD 1
-#define BACKWARD 2
+#define REEL_IN 1
+#define REEL_OUT 2
 #define BRAKE 3
 #define RELEASE 4
 
-int RECV_PIN = 9;
+// IR receiver pin
+#define RECV_PIN 9
+IRrecv irReceiver(RECV_PIN);
 
-#define BR_DOWN 0x1
-#define BR_UP 0x0
-
-IRrecv irrecv(RECV_PIN);
-
-decode_results results;
+// Motor speeds [0, 255]
+#define NO_SPEED 0
+#define LOW_SPEED 70
+#define MEDIUM_SPEED 150
+#define HIGH_SPEED 230
 
 void setup() {
   Serial.begin(9600);
-  irrecv.enableIRIn(); // Start the receiver
+  irReceiver.enableIRIn(); // Start the IR Receiver
 }
 
 void loop() {
-  if (irrecv.decode()) {
-    irrecv.resume();  // Receive the next code
-    if (irrecv.decodedIRData.command == 6) {
-      // Speed up
-      motor(1, BACKWARD, 150);
-    } else if (irrecv.decodedIRData.command == 4) {
-      // Slow down
-      motor(1, FORWARD, 150);
-    } else if (irrecv.decodedIRData.command == 5) {
-      // Slow down
-      motor(1, RELEASE, 0);
+  if (irReceiver.decode()) {
+    // Process received IR signals
+    switch(irReceiver.decodedIRData.command) {
+      // Motor 1
+      case 0: // POWER button
+        motor(1, REEL_OUT, LOW_SPEED);
+        break;
+      case 4: // BACK button
+        motor(1, REEL_OUT, MEDIUM_SPEED);
+        break;
+      case 8: // DOWN button
+        motor(1, REEL_OUT, HIGH_SPEED);
+        break;
+      case 2: // FUNC/STOP button
+        motor(1, REEL_IN, LOW_SPEED);
+        break;
+      case 6: // NEXT button
+        motor(1, REEL_IN, MEDIUM_SPEED);
+        break;
+      case 10: // UP button
+        motor(1, REEL_IN, HIGH_SPEED);
+        break;
+      case 1: // VOL+ button
+      case 5: // PLAY/PAUSE button
+      case 9: // VOL- button
+        motor(1, RELEASE, NO_SPEED);
+        break;
+      
+      // Motor 2 
+      case 16: // 1 button
+        motor(2, REEL_OUT, LOW_SPEED);
+        break;
+      case 20: // 4 button
+        motor(2, REEL_OUT, MEDIUM_SPEED);
+        break;
+      case 24: // 7 button
+        motor(2, REEL_OUT, HIGH_SPEED);
+        break;
+      case 18: // 3 button
+        motor(2, REEL_IN, LOW_SPEED);
+        break;
+      case 22: // 6 button
+        motor(2, REEL_IN, MEDIUM_SPEED);
+        break;
+      case 26: // 9 button
+        motor(2, REEL_IN, HIGH_SPEED);
+        break;
+      case 17: // 2 button
+      case 21: // 5 button
+      case 25: // 8 button
+        motor(2, RELEASE, NO_SPEED);
+        break;
+
+      default:
+        break; // Do nothing
     }
-    irrecv.resume(); // Receive the next value
+    irReceiver.resume(); // Receive the next value
   }
 }
+
+//////////////////////////////////////////////////////////////////////////////////
 
 void motor(int motorNumber, int command, int speed) {
   int motorA, motorB;
@@ -63,32 +110,31 @@ void motor(int motorNumber, int command, int speed) {
     motorA = MOTOR2_A;
     motorB = MOTOR2_B;
   } else {
-    // Invalid motor, do nothing
-    return;
+    return; // Invalid motor, do nothing
   }
 
   switch (command) {
-    case FORWARD:
-      set_motor(motorA, HIGH, speed);
-      set_motor(motorB, LOW, -1);
+    case REEL_IN:
+      setMotor(motorA, HIGH, speed);
+      setMotor(motorB, LOW, -1);
       break;
-    case BACKWARD:
-      set_motor(motorA, LOW, speed);
-      set_motor(motorB, HIGH, -1);
+    case REEL_OUT:
+      setMotor(motorA, LOW, speed);
+      setMotor(motorB, HIGH, -1);
       break;
     case BRAKE:
-      set_motor(motorA, LOW, 255);
-      set_motor(motorB, LOW, -1);
+      setMotor(motorA, LOW, 255);
+      setMotor(motorB, LOW, -1);
       break;
     case RELEASE:
-      set_motor(motorA, LOW, 0);
-      set_motor(motorB, LOW, -1);
+      setMotor(motorA, LOW, 0);
+      setMotor(motorB, LOW, -1);
       break;
   }
 }
 
 // Function to set motor speed and direction via PWM
-void set_motor(int output, int state, int speed) {
+void setMotor(int output, int state, int speed) {
   int motorPWM;
 
   // Select PWM pin based on the motor's output pin
