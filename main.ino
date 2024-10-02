@@ -1,23 +1,4 @@
-#include <SoftwareSerial.h>
-#include <RemoteXY.h>
-
-// RemoteXY GUI configuration  
-#pragma pack(push, 1)  
-uint8_t RemoteXY_CONF[] =   // 37 bytes
-  { 255,4,0,0,0,30,0,18,0,0,0,31,1,200,84,1,1,2,0,5,
-  15,9,60,60,32,2,26,31,5,130,9,60,60,32,2,26,31 };
-  
-// This structure defines all the variables and events of the control interface 
-struct {
-  // Input variables
-  int8_t unused1; // from -100 to 100
-  int8_t speed1; // from -100 to 100
-  int8_t unused2; // from -100 to 100
-  int8_t speed2; // from -100 to 100
-
-  uint8_t connect_flag;  // =1 if wire connected, else =0
-} RemoteXY;   
-#pragma pack(pop)
+#include <IRremote.h>
 
 // Control pins that operate the shift register
 #define MOTORLATCH 12
@@ -41,37 +22,34 @@ struct {
 #define BRAKE 3
 #define RELEASE 4
 
-CRemoteXY *remotexy;
+int RECV_PIN = 9;
+
+#define BR_DOWN 0x1
+#define BR_UP 0x0
+
+IRrecv irrecv(RECV_PIN);
+
+decode_results results;
 
 void setup() {
-  remotexy = new CRemoteXY (
-    RemoteXY_CONF_PROGMEM, 
-    &RemoteXY, 
-    new CRemoteXYStream_SoftSerial (
-      A1,     // REMOTEXY_SERIAL_RX
-      A0,     // REMOTEXY_SERIAL_TX
-      9600    // REMOTEXY_SERIAL_SPEED
-    )
-  );
+  Serial.begin(9600);
+  irrecv.enableIRIn(); // Start the receiver
 }
 
 void loop() {
-  remotexy->handler();
-
-  if (RemoteXY.speed1 == 0) {
-    motor(1, RELEASE, 0);
-  } else if (RemoteXY.speed1 > 0) {
-    motor(1, FORWARD, RemoteXY.speed1);
-  } else {
-    motor(1, BACKWARD, RemoteXY.speed1);
-  }
-
-  if (RemoteXY.speed2 == 0) {
-    motor(2, RELEASE, 0);
-  } else if (RemoteXY.speed2 > 0) {
-    motor(2, FORWARD, RemoteXY.speed2);
-  } else {
-    motor(2, BACKWARD, RemoteXY.speed2);
+  if (irrecv.decode()) {
+    irrecv.resume();  // Receive the next code
+    if (irrecv.decodedIRData.command == 6) {
+      // Speed up
+      motor(1, BACKWARD, 150);
+    } else if (irrecv.decodedIRData.command == 4) {
+      // Slow down
+      motor(1, FORWARD, 150);
+    } else if (irrecv.decodedIRData.command == 5) {
+      // Slow down
+      motor(1, RELEASE, 0);
+    }
+    irrecv.resume(); // Receive the next value
   }
 }
 
@@ -162,8 +140,8 @@ void shiftWrite(int output, int state) {
   // Update the shift register with the new output state
   bitWrite(latch_copy, output, state);
   shiftOut(MOTORDATA, MOTORCLK, MSBFIRST, latch_copy);
-  RemoteXY_delay(1);    
+  delayMicroseconds(5); 
   digitalWrite(MOTORLATCH, HIGH);
-  RemoteXY_delay(1);    
+  delayMicroseconds(5);
   digitalWrite(MOTORLATCH, LOW);
 }
