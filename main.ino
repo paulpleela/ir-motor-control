@@ -1,4 +1,4 @@
-#include <IRremote.h>
+#include <IRremote.hpp>
 
 // Control pins that operate the shift register
 #define MOTORLATCH 12
@@ -23,8 +23,7 @@
 #define RELEASE 4
 
 // IR receiver pin
-#define RECV_PIN 9
-IRrecv irReceiver(RECV_PIN);
+#define IR_RECEIVE_PIN 9
 
 // Motor speeds [0, 255]
 #define NO_SPEED 0
@@ -34,13 +33,19 @@ IRrecv irReceiver(RECV_PIN);
 
 void setup() {
   Serial.begin(9600);
-  irReceiver.enableIRIn(); // Start the IR Receiver
+
+  // Ensure motors are initially released
+  motor(1, RELEASE, NO_SPEED);
+  motor(2, RELEASE, NO_SPEED);
+
+  // Start IR receiver
+  IrReceiver.begin(IR_RECEIVE_PIN, ENABLE_LED_FEEDBACK);
 }
 
 void loop() {
-  if (irReceiver.decode()) {
+  if (IrReceiver.decode()) {
     // Process received IR signals
-    switch(irReceiver.decodedIRData.command) {
+    switch(IrReceiver.decodedIRData.command) {
       // Motor 1
       case 0: // POWER button
         motor(1, REEL_OUT, LOW_SPEED);
@@ -94,7 +99,7 @@ void loop() {
       default:
         break; // Do nothing
     }
-    irReceiver.resume(); // Receive the next value
+    IrReceiver.resume(); // Receive the next value
   }
 }
 
