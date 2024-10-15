@@ -27,7 +27,7 @@
 
   // Motor speeds [0, 255]
   #define NO_SPEED 0
-  #define LOW_SPEED 30
+  #define LOW_SPEED 40
   #define HIGH_SPEED 60
 
   void setup() {
@@ -49,47 +49,36 @@
         case 0: // POWER button
           motor(1, REEL_IN, HIGH_SPEED);
           break;
-        case 8: // DOWN button
+        case 4: // BACK button
           motor(1, REEL_OUT, HIGH_SPEED);
           break;
-        case 16: // 1 button
+        case 12: // 0 button
           motor(1, REEL_IN, LOW_SPEED);
           break;
-        case 24: // 7 button
+        case 16: // 1 button
           motor(1, REEL_OUT, LOW_SPEED);
-          break;
-        case 4: // BACK button
-        case 20: // 4 button
-          motor(1, RELEASE, NO_SPEED);
           break;
         
         // Motor 2 
         case 2: // FUNC/STOP button
           motor(2, REEL_IN, HIGH_SPEED);
           break;
-        case 10: // UP button
+        case 6: // NEXT button
           motor(2, REEL_OUT, HIGH_SPEED);
           break;
-        case 18: // 3 button
+        case 14: // ST/REPT button
           motor(2, REEL_IN, LOW_SPEED);
           break;
-        case 26: // 9 button
+        case 18: // 3 button
           motor(2, REEL_OUT, LOW_SPEED);
           break;
-        case 6: // NEXT button
-        case 22: // 6 button
-          motor(2, RELEASE, NO_SPEED);
-          break;
-
-        // Stop all
-        case 13:
-          motor(1, RELEASE, NO_SPEED);
-          motor(2, RELEASE, NO_SPEED);
-          break; 
 
         default:
           break; // Do nothing
       }
+      delay(500);
+      motor(1, RELEASE, NO_SPEED);
+      motor(2, RELEASE, NO_SPEED);
       IrReceiver.resume(); // Receive the next value
     }
   }
