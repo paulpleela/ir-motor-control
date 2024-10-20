@@ -73,12 +73,23 @@
           motor(2, REEL_OUT, LOW_SPEED);
           break;
 
+        // Stop all
+        case 24: // 7 button
+        case 25: // 8 button
+        case 26: // 9 button
+          motor(1, RELEASE, NO_SPEED);
+          motor(2, RELEASE, NO_SPEED);
+          break;
+
         default:
           break; // Do nothing
       }
+
+      // Stop motors after button release
       delay(500);
       motor(1, RELEASE, NO_SPEED);
       motor(2, RELEASE, NO_SPEED);
+      
       IrReceiver.resume(); // Receive the next value
     }
   }
