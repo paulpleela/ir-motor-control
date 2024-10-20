@@ -1,16 +1,18 @@
 # IR Motor Control
-This Arduino program can be used for controlling the speed and direction of two DC motors (or winches) via an IR signal.
+This Arduino program can be used for controlling two DC motors (or winches) via an IR signal. The motors can be controlled to wind in both directions and at two speed settings.
 
 ## Getting Started
 ### Components used
 - Arduino Uno R4 Minima
-- 5-12V DC Motors
+- Two 5-12V DC Motors
 - L293D Motor Shield
 - IR Receiver and Remote
-- 12V/2A Power Source
+- 12V/2A Power Supply
+- Jumper Wires
 
 ### Circuit diagram
-TODO
+![Circuit Diagram](https://github.com/user-attachments/assets/841539ba-1a62-41a4-807e-327b98a12615)
+
 
 ### Running the program
 1. Connect the hardware following the circuit diagram shown above
@@ -27,7 +29,10 @@ TODO
 6. Press the `->` icon in the top left of the IDE to upload the code to the Arduino board
 
 ### Controlling the motors
-TODO
+![Remote Controls](https://github.com/user-attachments/assets/9bcdc2ce-7a55-49b1-9b5d-258188de10fa)
+
+
+The motors can be controlled using the remote control buttons as shown in the image above. Pressing a button will cause the winch motors to reel its cable in or out for a short duration before stopping.
 
 ## Acknowledgements
 - Part of this code was taken and modified from the Test Code provided in the [Duinotech L203D Motor Control Shield XC4472 Datasheet](https://www.electusdistribution.com.au/dbdocument/701175/xc4472_manual_14833.pdf)
