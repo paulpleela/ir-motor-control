@@ -32,7 +32,29 @@ This Arduino program can be used for controlling two DC motors (or winches) via 
 ![Remote Controls](https://github.com/user-attachments/assets/9bcdc2ce-7a55-49b1-9b5d-258188de10fa)
 
 
-The motors can be controlled using the remote control buttons as shown in the image above. Pressing a button will cause the winch motors to reel its cable in or out for a short duration before stopping.
+The motors can be controlled using the remote control buttons as shown in the image above. Pressing a button will cause the winch motor to reel its cable in or out for a short duration before stopping.
+
+## UML Sequence Diagram
+
+```mermaid
+sequenceDiagram
+    participant IR_Remote
+    participant Arduino
+    participant Motor_Control
+
+    IR_Remote ->> Arduino: Send Command
+    Arduino ->> Arduino: Decode Command
+    Arduino ->> Arduino: Determine which motor to control
+    Arduino ->> Motor_Control: Activate motor with specified action
+    Motor_Control ->> Motor_Control: Set motor direction and state
+    Motor_Control ->> Motor_Control: Adjust PWM for speed control
+    Motor_Control ->> Motor_Control: Perform motor action (reel in/out)
+    Motor_Control ->> Arduino: Notify action completion
+    Arduino ->> Arduino: Wait for 500 ms (debounce)
+    Arduino ->> Motor_Control: Stop motors completely
+    Arduino ->> Arduino: Prepare to receive next command
+
+```
 
 ## Acknowledgements
 - Part of this code was taken and modified from the Test Code provided in the [Duinotech L203D Motor Control Shield XC4472 Datasheet](https://www.electusdistribution.com.au/dbdocument/701175/xc4472_manual_14833.pdf)
