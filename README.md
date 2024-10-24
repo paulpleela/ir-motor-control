@@ -29,10 +29,10 @@ This Arduino program can be used for controlling two DC motors (or winches) via 
 6. Press the `->` icon in the top left of the IDE to upload the code to the Arduino board
 
 ### Controlling the motors
-![Remote Controls](https://github.com/user-attachments/assets/9bcdc2ce-7a55-49b1-9b5d-258188de10fa)
+![image](https://github.com/user-attachments/assets/b2a90abd-4b37-4bad-8e87-bf3259e33128)
 
 
-The motors can be controlled using the remote control buttons as shown in the image above. Pressing a button will cause the winch motor to reel its cable in or out for a short duration before stopping.
+The motors can be controlled using the remote control buttons as shown in the image above. Pressing buttons A-H will cause the winch motor to reel its cable in or out for a short duration before stopping.
 
 ## UML Sequence Diagram
 
