@@ -10,8 +10,8 @@ This Arduino program can be used for controlling two DC motors (or winches) via 
 - 12V/2A Power Supply
 - Jumper Wires
 
-### Circuit diagram
-![Circuit Diagram](https://github.com/user-attachments/assets/841539ba-1a62-41a4-807e-327b98a12615)
+### Wiring diagram
+![Wiring Diagram](https://github.com/user-attachments/assets/841539ba-1a62-41a4-807e-327b98a12615)
 
 
 ### Running the program
@@ -29,7 +29,7 @@ This Arduino program can be used for controlling two DC motors (or winches) via 
 6. Press the `->` icon in the top left of the IDE to upload the code to the Arduino board
 
 ### Controlling the motors
-![image](https://github.com/user-attachments/assets/b2a90abd-4b37-4bad-8e87-bf3259e33128)
+![Remote Controls](https://github.com/user-attachments/assets/b2a90abd-4b37-4bad-8e87-bf3259e33128)
 
 
 The motors can be controlled using the remote control buttons as shown in the image above. Pressing buttons A-H will cause the winch motor to reel its cable in or out for a short duration before stopping.
